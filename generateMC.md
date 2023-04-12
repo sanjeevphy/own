@@ -84,6 +84,7 @@
 
 ----
 <!--
+https://cms-pdmv.cern.ch/mcm/public/restapi/requests/get_setup/BPH-Run3Summer22EEDRPremix-00015
 ## DIGI-RAW Step
 ### Obtain the configuration file for Production
 	- This command can produce a configuration file for _cmsRun_  that could be used for producing the MC samples
