@@ -77,7 +77,74 @@
 		--era Run3 \
 		--no_exec --mc -n 100
     ```
-    
+## DIGI,DATAMIX,L1,DIGI2RAW,HLT,RAW2DIGI,L1Reco,RECO,RECOSIM
+[Commands can be found at mcm page.](https://cms-pdmv.cern.ch/mcm/public/restapi/requests/get_setup/BPH-Run3Summer22EEDRPremix-00015)  
+
+### Get the cms configuration (DIGI,DATAMIX,L1,DIGI2RAW,HLT)
+  - Configuration file
+  - ```bash
+    cmsDriver.py  \
+        --python_filename BPH-Run3Summer22EEDRPremix-00015_1_cfg.py \
+        --eventcontent PREMIXRAW \
+        --customise Configuration/DataProcessing/Utils.addMonitoring \
+        --datatier GEN-SIM-RAW \
+        --fileout file:BPH-Run3Summer22EEDRPremix-00015_0.root \
+        --pileup_input "dbs:/Neutrino_E-10_gun/Run3Summer21PrePremix-Summer22_124X_mcRun3_2022_realistic_v11-v2/PREMIX" \
+        --conditions 124X_mcRun3_2022_realistic_postEE_v1 \
+        --step DIGI,DATAMIX,L1,DIGI2RAW,HLT:2022v14 \
+        --procModifiers premix_stage2,siPixelQualityRawToDigi \
+        --geometry DB:Extended \
+        --filein file:BPH-Run3Summer22EEGS-00017.root \
+        --datamix PreMix \
+        --era Run3 \
+        --no_exec \
+        --mc -n $EVENTS
+    ```
+
+### Get the cms configuration (RAW2DIGI,L1Reco,RECO,RECOSIM)
+  - Configuration file
+  - ```bash
+    cmsDriver.py  \
+        --python_filename BPH-Run3Summer22EEDRPremix-00015_2_cfg.py \
+        --eventcontent AODSIM \
+        --customise Configuration/DataProcessing/Utils.addMonitoring \
+        --datatier AODSIM \
+        --fileout file:BPH-Run3Summer22EEDRPremix-00015.root \
+        --conditions 124X_mcRun3_2022_realistic_postEE_v1 \
+        --step RAW2DIGI,L1Reco,RECO,RECOSIM \
+        --procModifiers siPixelQualityRawToDigi \
+        --geometry DB:Extended \
+        --filein file:BPH-Run3Summer22EEDRPremix-00015_0.root \
+        --era Run3 \
+        --no_exec \
+        --mc -n $EVENTS
+    ```
+
+### Get the cms configuration file for AODSIM (mixing of above two)
+  - ```bash
+    cmsDriver.py  \
+        --python_filename BPH-Run3Summer22EE_genSimToAOD_noPU_cfg.py \
+        --eventcontent AODSIM \
+        --customise Configuration/DataProcessing/Utils.addMonitoring \
+        --datatier AODSIM \
+        --fileout file:BPH-Run3Summer22EE-00015_0.root \
+        --conditions 124X_mcRun3_2022_realistic_postEE_v1 \
+        --step DIGI,L1,DIGI2RAW,HLT:2022v14,RAW2DIGI,L1Reco,RECO,RECOSIM \
+        --procModifiers siPixelQualityRawToDigi \
+        --geometry DB:Extended \
+        --filein file:BPH-Run3Summer22EEGS-00017.root \
+        --era Run3 \
+        --no_exec \
+        --mc -n 100
+    ```
+
+## MiniAOD
+### Get the cms configuration file for miniAODSIM
+  - [McM page for MiniAOD](https://cms-pdmv.cern.ch/mcm/public/restapi/requests/get_setup/BPH-Run3Summer22EEMiniAODv3-00044)  
+  - ```bash
+    cmsDriver.py  --python_filename BPH-Run3Summer22EEMiniAODv3-00044_1_cfg.py --eventcontent MINIAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier MINIAODSIM --fileout file:BPH-Run3Summer22EEMiniAODv3-00044.root --conditions 124X_mcRun3_2022_realistic_postEE_v1 --step PAT --geometry DB:Extended --filein "dbs:/Bdto2K_BMuonFilter_SoftQCDnonD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEDRPremix-124X_mcRun3_2022_realistic_postEE_v1-v1/AODSIM" --era Run3 --no_exec --mc -n $EVENTS
+    ```
+
 ----
 
 ## NEED TO BE UPDATED Parts below
