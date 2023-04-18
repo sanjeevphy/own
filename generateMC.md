@@ -77,6 +77,34 @@
 		--era Run3 \
 		--no_exec --mc -n 100
     ```
+  - Crab job submission sample file:
+  - ```python
+	from CRABClient.UserUtilities import config
+	config = config()
+
+	#config.section_('General')
+	config.General.requestName = 'bsTo4Mu_RunIISummer20UL18GENSIMDIGIRAW_v1'
+	config.General.workArea = 'crab_projects'
+	config.General.transferOutputs = True
+	config.General.transferLogs = True
+
+	#config.section_('JobType')
+	config.JobType.pluginName = 'PrivateMC'
+	config.JobType.psetName = 'BPH-Run3Summer22EEGS-00017_test.py'
+	config.Data.outputPrimaryDataset = 'BsTo4Mu-pythia8-evtgen'
+
+	config.JobType.allowUndistributedCMSSW = True
+	config.JobType.maxMemoryMB = 4000
+	config.Data.splitting = 'EventBased'
+	config.Data.unitsPerJob = 60000
+	NJOBS = 2000
+	config.Data.totalUnits = config.Data.unitsPerJob * NJOBS
+
+	config.Data.outLFNDirBase = '/store/user/sakumar/bs4mu/privateSamples/Run3/'
+	config.Site.storageSite   = 'T2_IN_TIFR'
+	config.Data.publication   = True
+    ```
+  - Output can be found on DBS page by searching `/*/username*/USER`
 ## DIGI,DATAMIX,L1,DIGI2RAW,HLT,RAW2DIGI,L1Reco,RECO,RECOSIM
 [Commands can be found at mcm page.](https://cms-pdmv.cern.ch/mcm/public/restapi/requests/get_setup/BPH-Run3Summer22EEDRPremix-00015)  
 
@@ -137,171 +165,52 @@
         --no_exec \
         --mc -n 100
     ```
+  - Sample crab submission file:
+  - ```python
+	from CRABClient.UserUtilities import config
+	config = config()
+
+	#config.section_('General')
+	config.General.requestName = 'bsTo4Mu_RunIISummer22AOD_v1_15Apr23'
+	config.General.workArea = 'crab_projects'
+	config.General.transferOutputs = True
+	config.General.transferLogs = True
+
+	#config.section_('JobType')
+	config.JobType.pluginName = 'Analysis'
+	config.JobType.psetName = 'BPH-Run3Summer22EE_genSimToAOD_cfg.py'
+
+	config.Data.inputDBS = 'phys03'
+	config.JobType.allowUndistributedCMSSW = True
+	config.JobType.maxMemoryMB = 3000
+	#config.JobType.numCores = 8
+	config.Data.inputDataset ='/BsTo4Mu-pythia8-evtgen/sakumar-crab_bsTo4Mu_RunIISummer20UL18GENSIMDIGIRAW_v1-a5933a4d0222a7203b437841532fd2cd/USER'
+	config.Data.splitting = 'FileBased'
+	config.Data.unitsPerJob = 1
+
+	config.Data.outLFNDirBase = '/store/user/sakumar/bs4mu/privateSamples/Run3/'
+	config.Site.storageSite   = 'T2_IN_TIFR'
+	config.Data.publication   = True
+    ```
 
 ## MiniAOD
 ### Get the cms configuration file for miniAODSIM
   - [McM page for MiniAOD](https://cms-pdmv.cern.ch/mcm/public/restapi/requests/get_setup/BPH-Run3Summer22EEMiniAODv3-00044)  
   - ```bash
-    cmsDriver.py  --python_filename BPH-Run3Summer22EEMiniAODv3-00044_1_cfg.py --eventcontent MINIAODSIM --customise Configuration/DataProcessing/Utils.addMonitoring --datatier MINIAODSIM --fileout file:BPH-Run3Summer22EEMiniAODv3-00044.root --conditions 124X_mcRun3_2022_realistic_postEE_v1 --step PAT --geometry DB:Extended --filein "dbs:/Bdto2K_BMuonFilter_SoftQCDnonD_TuneCP5_13p6TeV_pythia8-evtgen/Run3Summer22EEDRPremix-124X_mcRun3_2022_realistic_postEE_v1-v1/AODSIM" --era Run3 --no_exec --mc -n $EVENTS
+    cmsDriver.py  \
+        --python_filename BPH-Run3Summer22EEMiniAODv3-00044_1_cfg.py \
+        --eventcontent MINIAODSIM \
+        --customise Configuration/DataProcessing/Utils.addMonitoring \
+        --datatier MINIAODSIM \
+        --fileout file:BPH-Run3Summer22EEMiniAODv3-00044.root \
+        --conditions 124X_mcRun3_2022_realistic_postEE_v1 \
+        --step PAT \
+        --geometry DB:Extended \
+        --filein "dbs:/BsTo4Mu-pythia8-evtgen/sakumar-crab_bsTo4Mu_RunIISummer22AOD_v1_15Apr23-d816354374bd25c19c12b7ad61fa46ff/USER" \
+        --era Run3 \
+        --no_exec \
+        --mc -n 100
     ```
-
-----
-
-## NEED TO BE UPDATED Parts below
-
-----
-<!--
-https://cms-pdmv.cern.ch/mcm/public/restapi/requests/get_setup/BPH-Run3Summer22EEDRPremix-00015
-## DIGI-RAW Step
-### Obtain the configuration file for Production
-	- This command can produce a configuration file for _cmsRun_  that could be used for producing the MC samples
-	- ```bash
-	  cmsDriver.py Configuration/GenProduction/python/fragment.py \
-	  	--python_filename genSimDigiRaw_mcProd.py \
-	  	--eventcontent PREMIXRAW \
-	  	--customise Configuration/DataProcessing/Utils.addMonitoring \
-	  	--datatier GEN-SIM-RAW \
-	  	--fileout file:BsToDStarCascade.root \
-	  	--pileup_input dbs:/Neutrino_E-10_gun/RunIISummer20ULPrePremix-UL18_106X_upgrade2018_realistic_v11_L1v1-v2/PREMIX \
-	  	--conditions 106X_upgrade2018_realistic_v11_L1v1 \
-	  	--step GEN,SIM,DIGI,DATAMIX,L1,DIGI2RAW \
-	  	--procModifiers premix_stage2 \
-	  	--geometry DB:Extended \
-	  	--datamix PreMix \
-	  	--era Run2_2018 \
-	  	--runUnscheduled \
-	  	--no_exec \
-	  	--beamspot Realistic25ns13TeVEarly2018Collision \
-	  	--mc -n 100
-	  ```
-	- The  genSimDigiRaw_mcProd.py file produced could be used for crab submission
-	- **One should test the file locally before submitting the file **
-	- **Sample crab submission file** : please edit the storage area accordingly _outLFNDirBase_
-		- ```py
-		  # crabSubmissionTemplate.py
-		  from CRABClient.UserUtilities import config
-		  config = config()
-		  
-		  #config.section_('General')
-		  config.General.requestName = 'bsToDsStarCascade_RunIISummer20UL18GENSIMDIGIRAW_v1'
-		  config.General.workArea = 'crab_projects'
-		  config.General.transferOutputs = True
-		  config.General.transferLogs = True
-		  
-		  #config.section_('JobType')
-		  config.JobType.pluginName = 'PrivateMC'
-		  config.JobType.psetName = 'genSimDigiRaw_mcProd.py'
-		  config.Data.outputPrimaryDataset = 'BsToDsStarSemuleptonicCascade-pythia8-evtgen'
-		  
-		  config.JobType.allowUndistributedCMSSW = True
-		  config.JobType.maxMemoryMB = 4000
-		  config.Data.splitting = 'EventBased'
-		  config.Data.unitsPerJob = 25000
-		  NJOBS = 2000
-		  config.Data.totalUnits = config.Data.unitsPerJob * NJOBS
-		  
-		  config.Data.outLFNDirBase = '/store/user/athachay/bs2mmg/privateSamples/UL18/'
-		  config.Site.storageSite   = 'T2_IN_TIFR'
-		  config.Data.publication   = True
-		  ```
-- After this step the published dataset could be found out at DAS by the string
-- ```
-  /*/<USERNAME>*/USER
-  ```
-- ## HLT Step
-	- ```bash
-	  cmsrel CMSSW_10_2_16_UL
-	  cd CMSSW_10_2_16_UL/
-	  cmsenv
-	  mkdir hltSim
-	  cd hltSim
-	  cmsDriver.py -python_filename hlt.py \
-	  		--eventcontent RAWSIM \
-	  		--customise Configuration/DataProcessing/Utils.addMonitoring \
-	  		--datatier GEN-S    IM-RAW \
-	  		--fileout file:BPH-RunIISummer20UL18HLT-00125.root \
-	  		--conditions 102X_upgrade2018_realistic_v15 \
-	  		--customise_commands process.source.bypassVersionCheck = cms.untracked.bool(True) \
-	  		--    step HLT:2018v32 \
-	  		--geometry DB:Extended \
-	  		--filein file:BPH-RunIISummer20UL18DIGIPremix-00125.root \
-	  		--era Run2_2018 \
-	  		--no_exec \
-	  		--mc -n 10
-	  ```
-	- Now the hlt.py produced could be used to submit jobs for HLT sim from the dataset produced in the previous step
-	- A sample crab submission script is as follwing
-	- ```py
-	  from CRABClient.UserUtilities import config
-	  config = config()
-	  
-	  #config.section_('General')
-	  config.General.requestName = 'bs2Cascade_HLTRun2UL18_v2p2'
-	  config.General.workArea = 'crab_projects'
-	  config.General.transferOutputs = True
-	  config.General.transferLogs = True
-	  
-	  #config.section_('JobType')
-	  config.JobType.pluginName = 'Analysis'
-	  config.JobType.psetName = 'hlt.py'
-	  
-	  config.Data.inputDBS = 'phys03'
-	  config.JobType.allowUndistributedCMSSW = True
-	  config.JobType.maxMemoryMB = 3000
-	  #config.JobType.numCores = 8
-	  config.Data.inputDataset ='/BsToDsStarSemuleptonicCascade-pythia8-evtgen/athachay-crab_bsToDsStarCascade_RunIISummer20UL18GENSIMDIGIRAW_v1-2f8acd8ece5e5d99ce34cf583be238df/USER'
-	  config.Data.splitting = 'FileBased'
-	  config.Data.unitsPerJob = 1
-	  
-	  config.Data.outLFNDirBase = '/store/user/athachay/BsToMuMuGamma/Data/RunIISummer20UL18/'
-	  config.Data.publication = True 
-	  config.Site.storageSite = 'T2_IN_TIFR'
-	  
-	  ```
-- ### RECO Step
-	- ```bash
-	  cmsrel CMSSW_10_6_20/
-	  cd CMSSW_10_6_20/src
-	  ```
-	- Get the cms configuration
-	- ```bash
-	  cmsDriver.py --python_filename recoStepUL2018.py \
-	  		--eventcontent RECOSIM \
-	  		--customise Configuration/DataProcessing/Utils.addMonitoring \
-	  		--datatier GEN-SIM-RECO \
-	  		--fileout file:BPH-RunIISummer20UL18RECO-00125.root \
-	  		--conditions 106X_upgrade2018_realistic_v11_L1v1 \
-	  		--step RAW2DIGI,L1Reco,RECO,RECOSIM,EI \
-	  		--geometry DB:Extended \
-	  		--filein file:BPH-RunIISummer20UL18HLT-00125.root \
-	  		--era Run2_2018 \
-	  		--runUnscheduled \
-	  		--no_exec \
-	  		--mc -n 10
-	  ```
-- ### MiniAOD step
-	- ```bash
-	  cmsrel CMSSW_10_6_20
-	  cd CMSSW_10_6_20
-	  cmsenv
-	  ```
-	- Get the cms congiguration file
-	- ```bash
-	  cmsDriver.py --python_filename BPH-RunIISummer20UL18MiniAODv2-00122_1_cfg.py \
-	  		--eventcontent MINIAODSIM \
-	  		--customise Configuration/DataProcessing/Utils.addMonitoring \
-	  		--datatier MINIAODSIM \
-	  		--fileout file:BPH-RunIISummer20UL18MiniAODv2-00122.root \
-	  		--conditions 106X_upgrade2018_realistic_v16_L1v1 \
-	  		--step PAT \
-	  		--procModifiers run2_miniAOD_UL \
-	  		--geometry DB:Extended \
-	  		--filein dbs:/BsToMuMu_SoftQCDnonD_TuneCP5_13TeV-pythia8-evtgen/RunIISummer20UL18RECO-106X_upgrade2018_realistic_v11_L1v1-v2/AODSIM \
-	  		--era Run2_2018 \
-	  		--runUnscheduled \
-	  		--no_exec \
-	  		--mc -n 10
-	  ```
-	-
-	-
-	-->
+  - For interactive run, we may need to add input file manually. For submitting crab jobs, this file is fine and you will find output in database.
+  - Crab jobs can be submitted by writting crab file as it is written in previous steps.
+## FWlite code or EdAnalyzer need to be written for further steps.
